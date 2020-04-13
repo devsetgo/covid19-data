@@ -1,0 +1,4 @@
+jupyterlab
+requests
+pandas
+numpy
