@@ -83,8 +83,9 @@ def calc_per_million(country: str, amount: int, population: int):
 def look_up_country(country: str, data: dict):
 
     for c in data:
-        if c["name"] == country:
-            result = c["pop2020"]
+        # print(c)
+        if c["Country"] == country:
+            result = c["Population"]
     else:
         result = 0
     # population of country
@@ -107,12 +108,12 @@ def calc_growth_per_day(country: str, current_day, cases: str, data: dict):
             break
 
     if prev_day_cases is None:
-        prev_day_cases = 0
-    result = int(cases) - int(day_2)
+        prev_day_cases = '0'
+    result = float(cases) - float(prev_day_cases)
     return result
 
 
-def calc_death_per_day(ountry: str, current_day, deaths: str, data: dict):
+def calc_death_per_day(country: str, current_day, deaths: str, data: dict):
 
     date_obj = current_day
     new_date = datetime.strptime(date_obj, "%Y-%m-%d").date()
@@ -126,9 +127,9 @@ def calc_death_per_day(ountry: str, current_day, deaths: str, data: dict):
             break
     
     if prev_day_cases is None:
-        prev_day_cases = 0
+        prev_day_cases = '0'
     
-    result = int(cases) - int(day_2)
+    result = float(deaths) - float(prev_day_cases)
     return result
     
 
