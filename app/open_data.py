@@ -28,7 +28,7 @@ def get_state_data() -> dict:
 
 def get_world_pop() -> dict:
 
-    result = open_csv(file_name="world_pop.csv")
+    result = open_csv(file_name="world_population.csv")
     return result
 
 
