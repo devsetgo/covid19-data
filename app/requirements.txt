@@ -5,3 +5,5 @@ numpy
 devsetgo_lib
 tqdm
 unsync
+loguru
+cython

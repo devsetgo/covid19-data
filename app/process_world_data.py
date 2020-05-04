@@ -10,6 +10,8 @@ from open_data import (
 from datetime import datetime, timedelta, date
 from tqdm import tqdm
 from unsync import unsync
+from loguru import logger
+from rate_calc import country_growth_per_day,country_death_per_day, get_country_data
 
 def calc_seven_day(row_data):
 
@@ -93,48 +95,11 @@ def look_up_country(country: str, data: dict):
     return result
 
 
-def calc_growth_per_day(country: str, current_day, cases: str, data: dict):
-
-    date_obj = current_day
-    new_date = datetime.strptime(date_obj, "%Y-%m-%d").date()
-    prev_day = new_date - timedelta(days=1)
-    prev_day_cases = None
-
-    for d in data:
-
-        if d["Date"] == str(prev_day) and d["Country/Region"] == country:
-            prev_day_cases = d["Confirmed"]
-            # print(2,str(prev_day), day_2)
-            break
-
-    if prev_day_cases is None:
-        prev_day_cases = '0'
-    result = float(cases) - float(prev_day_cases)
-    return result
-
-
-def calc_death_per_day(country: str, current_day, deaths: str, data: dict):
-
-    date_obj = current_day
-    new_date = datetime.strptime(date_obj, "%Y-%m-%d").date()
-    prev_day = new_date - timedelta(days=1)
-    prev_day_cases = None
-
-    for d in data:
-
-        if d["Date"] == str(prev_day) and d["Country/Region"] == country:
-            prev_day_cases = d["Deaths"]
-            break
-    
-    if prev_day_cases is None:
-        prev_day_cases = '0'
-    
-    result = float(deaths) - float(prev_day_cases)
-    return result
     
 
 @unsync
 def run_calculations(wp, w, wd):
+
     new_row: list = [
         w["Date"],
         w["Country/Region"],
@@ -147,7 +112,7 @@ def run_calculations(wp, w, wd):
     ]
 
     population = look_up_country(country=w["Country/Region"], data=wp)
-
+    country_list: list = get_country_data(country=w["Country/Region"],data=wd)
     week_num = get_week_number(w)
     new_row.append(week_num)
 
@@ -176,16 +141,16 @@ def run_calculations(wp, w, wd):
     my_countries = False  # ToDo
     new_row.append(my_countries)
 
-    growth_per_day = calc_growth_per_day(
-        country=w["Country/Region"], current_day=w["Date"], cases=w["Confirmed"], data=wd
+    growth_per_day = country_growth_per_day(
+        country=w["Country/Region"], current_day=w["Date"], cases=w["Confirmed"], data=country_list
     )
     new_row.append(growth_per_day)
 
     case_percent_change = 0.0
     new_row.append(case_percent_change)
 
-    death_per_day = calc_death_per_day(
-        country=w["Country/Region"], current_day=w["Date"],deaths=w["Deaths"], data=wd
+    death_per_day = country_death_per_day(
+        country=w["Country/Region"], current_day=w["Date"],deaths=w["Deaths"], data=country_list
     )
     new_row.append(death_per_day)
 
