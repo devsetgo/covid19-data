@@ -1,5 +1,6 @@
 import requests
 from devsetgo_lib.file_functions import save_csv
+from loguru import logger
 
 import csv
 import requests
@@ -37,6 +38,7 @@ def start_downloads():
     }
     ulrs = [us_counties, us_states, world]
     for d in ulrs:
+        logger.info(f"downloading {d}")
         dowload(filename=d["filename"], CSV_URL=d["url"])
 
 
