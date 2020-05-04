@@ -1,9 +1,1 @@
-jupyterlab
-requests
-pandas
-numpy
-devsetgo_lib
-tqdm
-unsync
-loguru
-cython
+-r requirements/prd.txt
