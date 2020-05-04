@@ -11,7 +11,8 @@ from datetime import datetime, timedelta, date
 from tqdm import tqdm
 from unsync import unsync
 from loguru import logger
-from rate_calc import country_growth_per_day,country_death_per_day, get_country_data
+from rate_calc import country_growth_per_day, country_death_per_day, get_country_data
+
 
 def calc_seven_day(row_data):
 
@@ -95,10 +96,50 @@ def look_up_country(country: str, data: dict):
     return result
 
 
-    
-
 @unsync
 def run_calculations(wp, w, wd):
+
+    population = look_up_country(country=w["Country/Region"], data=wp)
+    country_list: list = get_country_data(country=w["Country/Region"], data=wd)
+    week_num = get_week_number(w)
+
+    month = get_week_month(w)
+
+    day_7 = calc_seven_day(w)
+
+    day_14 = calc_fourteen_day(w)
+
+    day_30 = calc_thrity_day(w)
+
+    cpm = calc_per_million(
+        country=w["Country/Region"], amount=w["Confirmed"], population=population
+    )
+
+    dpm = calc_per_million(
+        country=w["Country/Region"], amount=w["Deaths"], population=population
+    )
+
+    my_countries = False  # ToDo
+
+    growth_per_day = country_growth_per_day(
+        country=w["Country/Region"],
+        province=w["Province/State"],
+        current_day=w["Date"],
+        cases=w["Confirmed"],
+        data=country_list,
+    )
+
+    case_percent_change = 0.0
+
+    death_per_day = country_death_per_day(
+        country=w["Country/Region"],
+        province=w["Province/State"],
+        current_day=w["Date"],
+        deaths=w["Deaths"],
+        data=country_list,
+    )
+
+    death_percent_change = 0.0
 
     new_row: list = [
         w["Date"],
@@ -109,60 +150,25 @@ def run_calculations(wp, w, wd):
         w["Confirmed"],
         w["Recovered"],
         w["Deaths"],
+        week_num,
+        month,
+        day_7,
+        day_14,
+        day_30,
+        cpm,
+        dpm,
+        my_countries,
+        growth_per_day,
+        case_percent_change,
+        death_per_day,
+        death_percent_change,
     ]
 
-    population = look_up_country(country=w["Country/Region"], data=wp)
-    country_list: list = get_country_data(country=w["Country/Region"],data=wd)
-    week_num = get_week_number(w)
-    new_row.append(week_num)
-
-    month = get_week_month(w)
-    new_row.append(month)
-
-    day_7 = calc_seven_day(w)
-    new_row.append(day_7)
-
-    day_14 = calc_fourteen_day(w)
-    new_row.append(day_14)
-
-    day_30 = calc_thrity_day(w)
-    new_row.append(day_30)
-
-    cpm = calc_per_million(
-        country=w["Country/Region"], amount=w["Confirmed"], population=population
-    )
-    new_row.append(cpm)
-
-    dpm = calc_per_million(
-        country=w["Country/Region"], amount=w["Deaths"], population=population
-    )
-    new_row.append(dpm)
-
-    my_countries = False  # ToDo
-    new_row.append(my_countries)
-
-    growth_per_day = country_growth_per_day(
-        country=w["Country/Region"], current_day=w["Date"], cases=w["Confirmed"], data=country_list
-    )
-    new_row.append(growth_per_day)
-
-    case_percent_change = 0.0
-    new_row.append(case_percent_change)
-
-    death_per_day = country_death_per_day(
-        country=w["Country/Region"], current_day=w["Date"],deaths=w["Deaths"], data=country_list
-    )
-    new_row.append(death_per_day)
-
-    death_percent_change = 0.0
-    new_row.append(death_percent_change)
-
-    # world_data_calculated.append(new_row)
     return new_row
 
 
 def main():
-    
+
     world_data_calculated: list = []
     header: list = [
         "Date",
@@ -192,15 +198,20 @@ def main():
 
     wd = get_world_data()
 
-    tasks = [run_calculations(wp=wp, w=w, wd=wd) for w in tqdm(wd,ascii=True,desc="World_Data_Start")]
+    tasks = [
+        run_calculations(wp=wp, w=w, wd=wd)
+        for w in tqdm(wd, ascii=True, desc="World_Data_Start")
+    ]
 
-    data = [task.result() for task in tqdm(tasks,ascii=True,desc="World_Data_Process")]
-    
+    data = [
+        task.result() for task in tqdm(tasks, ascii=True, desc="World_Data_Process")
+    ]
+
     for d in data:
         world_data_calculated.append(d)
     # print(world_data_calculated)
     save_csv(file_name="calc_world.csv", data=world_data_calculated)
-   
+
 
 if __name__ == "__main__":
     main()
