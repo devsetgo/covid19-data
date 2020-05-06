@@ -9,11 +9,16 @@ _DATE_14 = pd.Timestamp('now').floor('D') + pd.offsets.Day(-14)
 _DATE_30 = pd.Timestamp('now').floor('D') + pd.offsets.Day(-30)
 
 
-def calc_per_million(amount: int, population: int):
-    if population == 0:
+
+def calc_per_million(amount, population):
+    if amount is None:
+        return 0
+    
+    if population is None or population == 0:
        return 0
        
     return amount * 1000000 / population
+
 
 
 def main():
