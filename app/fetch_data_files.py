@@ -18,7 +18,8 @@ def download(url, filename):
 
 def rename_coutries(df):
     replace_map = {}
-    
+
+    replace_map['Myanmar'] = 'Burma'
     replace_map['Bolivia (Plurinational State of)'] = 'Bolivia'
     replace_map['Brunei Darussalam'] = 'Brunei'
     replace_map['Democratic Republic of the Congo'] = 'Congo'
