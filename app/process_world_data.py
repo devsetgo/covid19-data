@@ -16,20 +16,32 @@ def calc_per_million(amount, population):
     
     if population is None or population == 0:
        return 0
-       
+   
     return amount * 1000000 / population
 
+#show contries that dont correlate 
+def debug_find_missing(wd, wp):    
+    wd_countries = wd['Country/Region'].unique()
+    wp_countries = wp['Country/Region'].unique()
+    
+    for country in wd_countries:
+        if country not in wp_countries:
+            logger.info(f'Country "{country}" mssing from word population')
 
 
 def main():
     wp = get_world_pop()    
     wd = get_world_data()
 
-    logger.info(f"Staring processing of {len(wd.index)} records")
-    #join world_data and world_popluation adding poplutaion to dataframe
-    wp = wp.rename(columns={'Country':'Country/Region'})
-    wd = pd.merge(wd, wp, on=['Country/Region'])
+    
 
+    logger.info(f"Staring processing of {len(wd.index)} records")
+
+    debug_find_missing(wd, wp)
+    
+    #join world_data and world_popluation adding poplutaion to dataframe    
+    wd = pd.merge(wd, wp, on=['Country/Region'])
+        
     #TODO 
     wd['MyCountries'] = False    
     

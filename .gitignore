@@ -132,3 +132,8 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+calc_world.csv
+us_counties_data.csv
+us_states_data.csv
+world_data.csv
+world_population.csv
