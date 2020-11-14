@@ -1,5 +1,5 @@
 jupyterlab==2.2.9 # from none
-requests==2.24.0 # from none
+requests==2.25.0 # from none
 pandas==1.1.4 # from none
 numpy==1.19.4 # from none
 devsetgo_lib==0.4.0 # from none
