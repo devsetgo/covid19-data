@@ -3,7 +3,7 @@ requests==2.25.0 # from none
 pandas==1.1.4 # from none
 numpy==1.19.4 # from none
 devsetgo_lib==0.4.0 # from none
-tqdm==4.52.0 # from none
+tqdm==4.53.0 # from none
 unsync==1.2.1 # from none
 loguru==0.5.3 # from none
 cython==0.29.21 # from none
