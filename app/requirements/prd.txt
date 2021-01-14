@@ -1,4 +1,4 @@
-jupyterlab==3.0.1 # from none
+jupyterlab==3.0.4 # from none
 requests==2.25.1 # from none
 pandas==1.2.0 # from none
 numpy==1.19.5 # from none
