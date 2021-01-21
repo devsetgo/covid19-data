@@ -1,6 +1,6 @@
 jupyterlab==3.0.4 # from none
 requests==2.25.1 # from none
-pandas==1.2.0 # from none
+pandas==1.2.1 # from none
 numpy==1.19.5 # from none
 devsetgo_lib==0.4.0 # from none
 tqdm==4.56.0 # from none
